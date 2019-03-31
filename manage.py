@@ -1,9 +1,15 @@
 #!/usr/bin/env python
 import os
 import sys
+import environ
 
 if __name__ == '__main__':
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'webapp.settings')
+    root = environ.Path(__file__) - 1
+    env = environ.Env(
+        DJANGO_SETTINGS_MODULE=(str, 'webapp.settings'),
+    )
+    environ.Env.read_env(os.path.join(root(), 'webapp/.env'))
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', env('DJANGO_SETTINGS_MODULE'))
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

@@ -1,3 +1,22 @@
 from django.db import models
+from apps.core.models import UUIDModel
+from django.utils.translation import gettext as _
 
-# Create your models here.
+
+class Almacen(UUIDModel):
+    code = models.CharField(_("Código"), max_length=32)
+    address = models.CharField(_("Dirección"), max_length=128)
+    description = models.TextField(_("Descripción"))
+
+
+class TipoDocumento(UUIDModel):
+    INGRESO = 'IN'
+    SALIDA = 'OUT'
+    TRANSACTION_TYPES = (
+        (INGRESO, _("Ingreso")),
+        (SALIDA, _("Salida")),
+    )
+
+    trs_type = models.CharField(
+        _("Tipo de transacción"), choices=TRANSACTION_TYPES,
+        max_length=5)

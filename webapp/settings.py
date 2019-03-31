@@ -11,21 +11,32 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+import environ
+from django.utils.translation import gettext_lazy as _
+
+
+root = environ.Path(__file__) - 2
+env = environ.Env(
+    DEBUG=(bool, False),
+    ALLOWED_HOSTS=(list, []),
+    SECRET_KEY=(str, 'zkt48un#r$s%65pgl&3#es5+a@s&y^5yd=^nn9m%&p9hr##-x6')
+)  # set default values and casting
+environ.Env.read_env()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+SITE_ROOT = root()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'zkt48un#r$s%65pgl&3#es5+a@s&y^5yd=^nn9m%&p9hr##-x6'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = env('ALLOWED_HOSTS')
 
 
 # Application definition
@@ -41,7 +52,9 @@ INSTALLED_APPS = [
 
 
 LOCAL_APPS = [
+    'apps.core',
     'apps.web',
+    'apps.empresa',
     'apps.producto',
     'apps.almacen',
     'apps.tienda',
@@ -50,7 +63,10 @@ LOCAL_APPS = [
     'apps.tracking',
     'apps.pickup',
     'apps.kardex',
+    'apps.webhooks',
 ]
+
+INSTALLED_APPS += LOCAL_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -60,6 +76,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.locale.LocaleMiddleware'
 ]
 
 ROOT_URLCONF = 'webapp.urls'
@@ -87,10 +104,9 @@ WSGI_APPLICATION = 'webapp.wsgi.application'
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+    # Raises ImproperlyConfigured exception if DATABASE_URL not in os.environ
+    'default': env.db(),
+    'extra': env.db('DATABASE_EXTRA_URL', default='sqlite:///extra.sqlite3')
 }
 
 
@@ -116,7 +132,12 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGES = [
+    ('es', _('Spanish')),
+    ('en', _('English')),
+]
+
+LANGUAGE_CODE = 'es-PE'
 
 TIME_ZONE = 'UTC'
 
@@ -125,6 +146,15 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    ),
+    'DEFAULT_PARSER_CLASSES': (
+        'rest_framework.parsers.JSONParser',
+    )
+}
 
 
 # Static files (CSS, JavaScript, Images)
