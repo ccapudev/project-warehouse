@@ -39,6 +39,19 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
+
+LOCAL_APPS = [
+    'apps.web',
+    'apps.producto',
+    'apps.almacen',
+    'apps.tienda',
+    'apps.stock_manager',
+    'apps.cliente',
+    'apps.tracking',
+    'apps.pickup',
+    'apps.kardex',
+]
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
