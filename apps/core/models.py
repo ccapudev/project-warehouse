@@ -37,6 +37,9 @@ class BaseModel(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        abstract = True
+
 
 class UUIDModel(BaseModel):
     uid = models.UUIDField("UUID", default=uuid4)
@@ -45,3 +48,6 @@ class UUIDModel(BaseModel):
         return "{}:{}".format(
             self.name, self.uid  # .hex[:6]
         )
+
+    class Meta:
+        abstract = True

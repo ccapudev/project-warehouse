@@ -17,6 +17,5 @@ class TipoDocumento(UUIDModel):
         (SALIDA, _("Salida")),
     )
 
-    trs_type = models.CharField(
-        _("Tipo de transacción"), choices=TRANSACTION_TYPES,
-        max_length=5)
+    transaction_type = models.CharField(_("Tipo de Transacción"), max_length=5,
+                                        choices=TRANSACTION_TYPES)
