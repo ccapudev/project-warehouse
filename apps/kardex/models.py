@@ -11,6 +11,9 @@ class Kardex(UUIDModel):
         (SALIDA, _("Salida")),
     )
     name = 'Kardex'
+    producto = models.ForeignKey("producto.Producto",
+                                on_delete=models.SET_NULL, null=True)
+    producto_sku = models.CharField(_("SKU"), max_length=128)
     almacen = models.ForeignKey("almacen.Almacen",
                                 on_delete=models.SET_NULL, null=True)
     entidad = models.ForeignKey("empresa.Entidad",
@@ -23,3 +26,5 @@ class Kardex(UUIDModel):
                                        verbose_name=_("Tipo Documento"),
                                        on_delete=models.SET_NULL)
     quantity = models.IntegerField(_("Cantidad"), default=0)
+    remaining = models.IntegerField(_("Cantidad Restante"), default=0)
+
